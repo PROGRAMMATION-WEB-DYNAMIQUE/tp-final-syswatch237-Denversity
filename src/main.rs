@@ -110,7 +110,7 @@ fn collect_snapshot() -> Result<SystemSnapshot, SysWatchError> {
     std::thread::sleep(std::time::Duration::from_millis(500));
     sys.refresh_all();
 
-    let cpu_usage = sys.global_cpu_info().cpu_usage();
+    let cpu_usage = sys.global_cpu_usage();
     let core_count = sys.cpus().len();
 
     if core_count == 0 {
@@ -127,7 +127,7 @@ fn collect_snapshot() -> Result<SystemSnapshot, SysWatchError> {
         .values()
         .map(|p: &Process| ProcessInfo {
             pid: p.pid().as_u32(),
-            name: p.name().to_string(),
+            name: p.name().to_string_lossy().to_string(),
             cpu_usage: p.cpu_usage(),
             memory_mb: p.memory() / 1024 / 1024,
         })
